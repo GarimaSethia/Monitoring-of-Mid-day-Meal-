@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> 
+	<title>Mid Day Meal</title>
+	<style type="text/css" >
+		#inside{
+			width: 70%;
+			height: 1000px;
+			background-color: white;
+			margin: auto;
+			position: relative;
+			padding: 20px;
+			font-size: 120%;
+			border: solid 5px black;
+
+		}
+		body{
+			background-image: url('https://s01.sgp1.cdn.digitaloceanspaces.com/article/108201-aeveizlzly-1544899613.jpg');
+			font-family: 'Montserrat', sans-serif;
+
+
+
+		}
+		h1{
+			text-align: center;
+			color: grey;
+			font-size: 60px;
+			margin: 10px;
+
+		}
+		h2{
+			text-align: center;
+		}
+		#school
+		{
+			position: absolute;
+			left: 365px;
+
+		}
+		#std{
+			position: absolute;
+			left: 365px;
+		}
+		#id{
+			position: absolute;
+			left: 365px;
+
+		}
+		#Submit{
+			position: absolute;
+			left: 40%;
+
+		}
+		#day{
+			position: absolute;
+			left: 365px;
+		}
+		#results{
+			
+			margin: 0 auto;
+			position: relative;	
+			padding: 50px;
+			height: 500px;
+			width: 80%;
+			border: solid 2px black;
+			
+		}
+		#reshead{
+			text-align: center;
+		}
+
+	</style>
+</head>
+<body>
+	<div id="inside">
+		<h1>
+			MID DAY MEAL 
+		</h1><hr>
+		<h2><u>ENTER THE SCHOOL DETAILS TO GET YOUR RESULTS</u> </h2>
+		<p>School Id: <input type="number" name="school-id" id="id"></p>
+		<p>Select the day: <select id="day">
+			<option value="mon">Monday</option>
+			<option value="tue">Tuesday</option>
+			<option value="wed">Wednesday</option>
+			<option value="thus">Thursday</option>
+			<option value="fri">Friday</option>
+			<option value="sat">Saturday</option>
+		</select>
+		<p>No. of student served: <input type="number" name="student" size="90%" id="std"></p>
+		<p><button id="Submit" onclick="myfunction()">Submit</button></p><br><br>
+		<div id="results">
+			<h3 id="reshead"></h3>
+			<p id="deo"></p>
+			<p id="load"></p>
+			<p id="coco"></p>
+			<p id="res"></p>
+			
+		</div>
+
+	</div>
+		
+			<!-- The core Firebase JS SDK is always required and must be listed first -->
+		<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+
+			<!-- TODO: Add SDKs for Firebase products that you want to use
+    		 https://firebase.google.com/docs/web/setup#available-libraries -->
+		<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-analytics.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-database.js"></script>
+		<script>
+ 		 // Your web app's Firebase configuration
+	 	var firebaseConfig = {
+	    apiKey: "AIzaSyB_KM_StrY0hYPYURUCVgtBvn3kUiwyHjY",
+	    authDomain: "middaymeal-341f1.firebaseapp.com",
+	    databaseURL: "https://middaymeal-341f1.firebaseio.com",
+	    projectId: "middaymeal-341f1",
+	    storageBucket: "middaymeal-341f1.appspot.com",
+	    messagingSenderId: "303618605425",
+	    appId: "1:303618605425:web:38ab8f04a7a584f812f6d0",
+	    measurementId: "G-Z5Z4999VWW"
+	  	};
+		  // Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		firebase.analytics();
+		var database = firebase.database();
+	
+		</script>
+	<script>
+			var id,day,cnum;
+			var count;
+			function myfunction()
+			{
+				 id = document.getElementById("id").value;
+				 day= document.getElementById("day").value;
+				 cnum= document.getElementById("std").value;
+				 document.getElementById("reshead").innerHTML ='<span>Your Details:</span><hr>' ;
+
+				console.log(id,day,cnum);
+				var countref =firebase.database().ref("mid-day-meal");
+				countref.on('value',gotData,errData);
+
+				
+			}
+			
+			function gotData(data){
+				var pat =data.val();
+				var keys = Object.keys(pat);
+				console.log(keys);
+				
+					
+				for(var i=0;i<keys.length;i++)
+				{		
+
+					if(id == pat[keys[i]].id)
+					{
+						document.getElementById("deo").innerHTML ="School Name : " + pat[keys[i]].school;
+						console.log(pat[keys[i]].school)
+						document.getElementById("load").innerHTML ="data you entered : " + cnum;
+						
+						switch(day)
+						{
+							case "mon": count= pat[keys[i]].dates.mon;
+										break;
+							case "wed": count= pat[keys[i]].dates.wed;
+										break;
+							case "tue": count= pat[keys[i]].dates.tue;
+										break;
+							case "thus":count = pat[keys[i]].dates.thus;
+										break;
+							case "fri": count = pat[keys[i]].dates.fri;
+										break;
+							case "sat": count = pat[keys[i]].dates.sat;
+										break;
+						}
+						
+					
+						document.getElementById("coco").innerHTML ="data collected from camera : " + count;
+					
+						if (cnum != count)
+						{
+							document.getElementById("res").innerHTML = '<span style="color: red">Test failed</span> ';
+							console.log(count);
+						}	
+						else
+						{
+							document.getElementById("res").innerHTML = '<span style="color: blue">Test passed</span> ';
+							console.log(count);
+						}
+						
+						break;
+					}
+					else
+					{
+						document.getElementById("res").innerHTML ='</span style ="font-size: 50px" "color: grey">NO DATA FOUND</span>'
+					}
+				}
+				console.log(count);
+			}
+			function errData(err){
+				console.log("Error!");
+				console.log(err);
+				
+			}
+			
+		</script>
+		
+</html>
